@@ -11,9 +11,9 @@ namespace Timecard.Controllers.Api {
 	public class TimesheetsController : ApiController {
 		TimecardDbContext db = new TimecardDbContext();
 
-		[HttpGet]
-		[Route("timesheets/signin/{pin}")]
-		public JsonResponse Signin(string pin) {
+		[HttpPost]
+		[Route("timesheets/signin")]
+		public JsonResponse Signin([FromBody]string pin) {
 			if (pin == null) {
 				return new JsonResponse {
 					Result = "Failed",
@@ -47,9 +47,9 @@ namespace Timecard.Controllers.Api {
 			};
 		}
 
-		[HttpGet]
-		[Route("timesheets/signout/{pin}")]
-		public JsonResponse Signout(string pin) {
+		[HttpPost]
+		[Route("timesheets/signout")]
+		public JsonResponse Signout([FromBody]string pin) {
 			if (pin == null) {
 				return new JsonResponse {
 					Result = "Failed",
@@ -101,9 +101,9 @@ namespace Timecard.Controllers.Api {
 			};
 		}
 
-		[HttpGet]
-		[Route("timesheets/signout/{pin}")]
-		public JsonResponse TotalHours(string pin) {
+		[HttpPost]
+		[Route("timesheets/totalhours")]
+		public JsonResponse TotalHours([FromBody]string pin) {
 			if (pin == null) {
 				return new JsonResponse {
 					Result = "Failed",
@@ -126,8 +126,8 @@ namespace Timecard.Controllers.Api {
 			var timesheets = db.Timesheets.Where(t => t.StudentId == student.Id).ToList();
 			double totalhours = 0;
 			timesheets.ForEach(t => {
-				if (t.Signout != null || t.Signin != null) {
-					var timespan = (t.Signin - t.Signout);
+				if (t.Signout != null && t.Signin != null) {
+					var timespan = (t.Signout - t.Signin);
 					totalhours += timespan.Value.TotalHours;
 				}
 			});
